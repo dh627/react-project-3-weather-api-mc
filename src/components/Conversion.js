@@ -1,26 +1,61 @@
-function Weather({day}){
+function Conversion({weather, celcius, farenheit, setWeather, setCelcius, setFarenheit}){
 
     const convertToFarenheit = () => {
-        weather.daily.forEach((day) => {
-            day.temp.day = day.temp.day * 9/5 + 32;
-        });
+        // create a copy of each day so that we arent updating the state
+        // note ...day wont make a copy of nested properties, so we must copy over temp separately 
+        let weatherArray = weather.daily.map((day) => {
+            const newDay = {
+                ...day,
+                temp: {
+                    ...day.temp,
+                }
+            }
+            newDay.temp.day = newDay.temp.day * 9/5 + 32;
+
+            return newDay;
+        })
+
+
+        // set the new data to be the state 
+        setWeather({ 
+            ...weather, 
+            daily: weatherArray,
+         })
 
         setCelcius(false)
         setFarenheit(true)
-        console.log(weather);
     }
 
+    // repeated code 
     const convertToCelcius = () => {
-        weather.daily.forEach((day) => {
-            day.temp.day = (day.temp.day - 32) * 5 / 9;
+        let weatherArray = weather.daily.map((day) => {
+            const newDay = {
+                ...day,
+                temp: {
+                    ...day.temp,
+                }
+            }
+
+            newDay.temp.day = (newDay.temp.day -32) * 5 / 9; 
+
+            return newDay;
         });
+
+        // set the new data to be the state 
+        setWeather({ 
+            ...weather, 
+            daily: weatherArray,
+         })
 
         setCelcius(true);
         setFarenheit(false);
     }
     
     return (
-        <button onClick={convertToFarenheit}>Convert to Farenheit</button>
+        <div>
+            {celcius && <button onClick={convertToFarenheit}>Convert to Farenheit</button>}
+            {farenheit && <button onClick={convertToCelcius}>Convert to Celcius</button>}
+        </div>
      );
 }
  

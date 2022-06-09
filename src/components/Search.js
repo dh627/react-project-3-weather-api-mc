@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Weather from "./Weather";
+import Conversion from "./Conversion";
 
 function Search(){
     localStorage.clear();
@@ -10,8 +11,8 @@ function Search(){
     const [cityName, setCityName] = useState("")
     const [isPending, setIsPending] = useState(false)
     const [isInvalidCity, setIsInvalidCity] = useState(false)
-    const [celcius, setCelcius] = useState(false)    // repeated code
-    const [farenheit, setFarenheit] = useState(false)    // repeated code
+    const [celcius, setCelcius] = useState(false)
+    const [farenheit, setFarenheit] = useState(false)
 
     function handleSubmit(e) {
         e.preventDefault();
@@ -40,33 +41,12 @@ function Search(){
         .then((weather) => {
             setWeather(weather);
             setIsPending(false);
-            setCelcius(true);    // repeated code
+            setCelcius(true);
             console.log('weather: ' + weather);
         })
         .catch(err => {
             console.log(err.message);
         })
-    }
-
-    // repeated code
-    const convertToFarenheit = () => {
-        weather.daily.forEach((day) => {
-            day.temp.day = day.temp.day * 9/5 + 32;
-        });
-
-        setCelcius(false)
-        setFarenheit(true)
-        console.log(weather);
-    }
-
-    // repeated code 
-    const convertToCelcius = () => {
-        weather.daily.forEach((day) => {
-            day.temp.day = (day.temp.day - 32) * 5 / 9;
-        });
-
-        setCelcius(true);
-        setFarenheit(false);
     }
 
     return ( 
@@ -90,10 +70,8 @@ function Search(){
                     })}
                 </div>
             </div>
-            {/* repeated code */}
-            {celcius && <button onClick={convertToFarenheit}>Convert to Farenheit</button>}
-            {farenheit && <button onClick={convertToCelcius}>Convert to Celcius</button>}
-
+            {/* could the way i'm passing in props be refactored? */}
+            <Conversion weather={weather} celcius={celcius} farenheit={farenheit} setWeather={setWeather} setCelcius={setCelcius} setFarenheit={setFarenheit}/>
         </div>
      );
 }
